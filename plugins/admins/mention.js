@@ -19,7 +19,7 @@ shuffledAdmins.forEach((admin, index) => {
 });
 messageText += "───────────────────```\n\n";
 
-messageText += `↓👥 *اخواني (${shuffledMembers.length})* 👥↓\n`;
+messageText += `↓👥 * القلش فكرة والفكرة لا تموت يا اخواني (${shuffledMembers.length})* 👥↓\n`;
 messageText += "```───────────────────\n";
 shuffledMembers.forEach((member, index) => {
     messageText += `│ ${index + 1}. @${member.split('@')[0]}\n`;
