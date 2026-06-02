@@ -15,11 +15,11 @@ messageText += `📯│ تـاريـخ: ${new Date().toLocaleDateString('ar-EG')
 messageText += `↓👑 *زيرام يناديكم يا مشرفين (${shuffledAdmins.length})* 👑↓\n`;
 messageText += "```───────────────────\n";
 shuffledAdmins.forEach((admin, index) => {
-    messageText += `🇩🇪│ ${index + 1}. @${admin.split('@')[0]}\n`;
+    messageText += `🍷│ ${index + 1}. @${admin.split('@')[0]}\n`;
 });
 messageText += "───────────────────```\n\n";
 
-messageText += `↓👥 * القلش فكرة والفكرة لا تموت يا اخواني (${shuffledMembers.length})* 👥↓\n`;
+messageText += `↓👥  *القلش فكرة والفكرة لا تموت يا اخواني (${shuffledMembers.length})* 👥↓\n`;
 messageText += "```───────────────────\n";
 shuffledMembers.forEach((member, index) => {
     messageText += `│ ${index + 1}. @${member.split('@')[0]}\n`;
