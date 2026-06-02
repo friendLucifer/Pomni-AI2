@@ -10,7 +10,7 @@ const client = new Client({
   fromMe: false, 
   owners: [
   // Owner 1
-    { name: "VA", lid: "247579682029763@lid", jid: "972569311531@s.whatsapp.net" },
+    { name: "Lucifer", lid: "247579682029763@lid", jid: "972569311531@s.whatsapp.net" },
   // Owner 2
     { name: "emam", lid: "221307316789354@lid", jid: "201044349439@s.whatsapp.net" },
   // Owner 3
@@ -34,8 +34,8 @@ if (!global.db) {
 const { config } = client;
 config.info = { 
   nameBot: "♡ 𝙋𝙊𝙈𝙉𝙄 🎪 〈", 
-  nameChannel: "𝐕𝐈𝐈7 ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️", 
-  idChannel: "120363225356834044@newsletter",
+  nameChannel: "arise ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️", 
+  idChannel: "@newsletter",
   urls: {
     repo: "https://github.com/deveni0/Pomni-AI",
     api: "https://emam-api.web.id",
