@@ -1,7 +1,7 @@
 {
-  "name": "Pomni AI",
+  "name": "zeram AI",
   "version": "2.0.0",
-  "description": "Simple WhatsApp bot, Modified by VENi - youssefv",
+  "description": "Simple WhatsApp bot, Modified by VENi - luciferfv",
   "main": "index.js",
   "type": "module",
   "scripts": {
