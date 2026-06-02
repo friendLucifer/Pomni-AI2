@@ -38,7 +38,7 @@ handler.before = async (m, { conn }) => {
 
   if (g.warnings[user] >= 3) {
     await conn.sendMessage(m.chat, {
-      text: `🚫 @${user.split("@")[0]} انت خالفت القوانين، دلوقتي هنطردك`,
+      text: `🚫 @${user.split("@")[0]} اسف انت خالفت القوانين، دلوقتي هنطردك`,
       mentions: [user]
     }, { quoted: global.reply_status });
 
