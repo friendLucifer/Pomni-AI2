@@ -15,8 +15,6 @@ export default async function before(m, { conn , bot }) {
    "زيرامي ": ["*𝒁𝑬𝑰𝑹𝑨𝑴 𝒁𝑬𝑰𝑹𝑨𝑴 جاهز لطلباتك  *", "*𝒁𝑬𝑰𝑹𝑨𝑴 في خدمتك *", "*الله نورك*"]
 };
 
-
-
   const replies = triggers[m.text];
   if (replies) {
     const ranReply = replies[Math.floor(Math.random() * replies.length)];
