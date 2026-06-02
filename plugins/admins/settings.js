@@ -56,8 +56,8 @@ async function handler(m, { conn, command, args }) {
 ],
           mentions: [m.sender],
   newsletter: {
-      name: '𝐕𝐈𝐈7 ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️',
-      jid: '120363225356834044@newsletter'
+      name: ' 🕷️',
+      jid: '@newsletter'
     },
   interactiveConfig: {
     buttons_limits: 1, // لازم تبقي واحد
