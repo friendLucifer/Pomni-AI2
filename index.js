@@ -33,7 +33,7 @@ if (!global.db) {
 /* =========== Config ========== */
 const { config } = client;
 config.info = { 
-  nameBot: "♡ 𝙋𝙊𝙈𝙉𝙄 🎪 〈", 
+  nameBot: "♡ 𝒁𝑬𝑰𝑹𝑨𝑴 🎪 〈", 
   nameChannel: "arise ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️", 
   idChannel: "@newsletter",
   urls: {
