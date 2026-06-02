@@ -1,10 +1,10 @@
 const handler = async (m, { conn, command }) => {
   if (command === "قفل") {
     await conn.groupSettingUpdate(m.chat, 'announcement');
-    m.reply('🔒 *لوسيفر قفل الشات* 🔒');
+    m.reply('🔒 *𝒁𝑬𝑰𝑹𝑨𝑴 قفل الشات* 🔒');
   } else if (command === "فتح") {
     await conn.groupSettingUpdate(m.chat, 'not_announcement');
-    m.reply('🔓 *لوسيفر فتح الشات* 🔓');
+    m.reply('🔓 *𝒁𝑬𝑰𝑹𝑨𝑴 فتح الشات* 🔓');
   }
 };
 
