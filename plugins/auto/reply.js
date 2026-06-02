@@ -14,7 +14,6 @@ export default async function before(m, { conn , bot }) {
  "لوسيفر بيسلم عليك ": ["*كلزق *", "* رفضتني في المنظمه ليه*", "*ايوه مين يعني *"]
    "زيرامي ": ["*𝒁𝑬𝑰𝑹𝑨𝑴 𝒁𝑬𝑰𝑹𝑨𝑴 جاهز لطلباتك  *", "*𝒁𝑬𝑰𝑹𝑨𝑴 في خدمتك *", "*الله نورك*"]
 };
-
   const replies = triggers[m.text];
   if (replies) {
     const ranReply = replies[Math.floor(Math.random() * replies.length)];
@@ -22,4 +21,4 @@ export default async function before(m, { conn , bot }) {
   }
   
   return false;
-}
+
