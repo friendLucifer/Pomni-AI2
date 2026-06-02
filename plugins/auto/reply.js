@@ -13,7 +13,7 @@ export default async function before(m, { conn , bot }) {
     "مازن بيسلم عليك": ["*الله يسلمك يا اخويا يا دحيح *", "*هتعلي التنسيق امتي*", "*هو مش بيذاكر ليه *"]
  "لوسيفر بيسلم عليك ": ["*كلزق *", "* رفضتني في المنظمه ليه*", "*ايوه مين يعني *"]
 [/
-  const replies = triggers[m.text];
+  const replies = triggers[m.body];
   if (replies) {
     const ranReply = replies[Math.floor(Math.random() * replies.length)];
     m.reply(ranReply);
