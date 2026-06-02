@@ -60,7 +60,7 @@ const handler = async (m, { conn, command }) => {
 ┃ 🍪 +${reward.cookies} كوكيز
 
 ╭─┈─┈─┈─⟞${reward.border}⟝─┈─┈─┈─╮
-┃ *تـسـتـقـبـل هـديـتك الـقـادمـة بـعـد* 🚀
+┃ *تـسـتـقـبـل هـديـتك الـقـادمـة من الامبريور بـعـد* 🚀
 ╰─┈─┈─┈─⟞✨⟝─┈─┈─┈─╯`;
 
     await conn.sendMessage(m.chat, {
