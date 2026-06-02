@@ -12,7 +12,6 @@ export default async function before(m, { conn , bot }) {
    "ناغومو بيسلم عليك ": ["*الملك بنفسه بيسلم عليا؟*", "*كداب مش مصدقك *", "*تحيه للقائد*"]
     "مازن بيسلم عليك": ["*الله يسلمك يا اخويا يا دحيح *", "*هتعلي التنسيق امتي*", "*هو مش بيذاكر ليه *"]
  "لوسيفر بيسلم عليك ": ["*كلزق *", "* رفضتني في المنظمه ليه*", "*ايوه مين يعني *"]
-   
   const replies = triggers[m.text];
   if (replies) {
     const ranReply = replies[Math.floor(Math.random() * replies.length)];
