@@ -33,7 +33,7 @@ const handler = async (m, { conn }) => {
   }
 
   await conn.sendMessage(m.chat, {
-    text: `✅ *تم حذف إنذار واحد*
+    text: `✅ *المشرف اعطف عليك*
 
 👤: @${id.split("@")[0]}
 📊 عدد الإنذارات المتبقي: ${newWarn}`,
