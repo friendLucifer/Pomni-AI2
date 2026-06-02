@@ -10,7 +10,7 @@ const client = new Client({
   fromMe: false, 
   owners: [
   // Owner 1
-    { name: "Lucifer", lid: "247579682029763@lid", jid: "972569311531@s.whatsapp.net" },
+    { name: "Lucifer", lid: "247579682029763@lid", jid: "201044349439@s.whatsapp.net" },
   // Owner 2
     { name: "emam", lid: "221307316789354@lid", jid: "201044349439@s.whatsapp.net" },
   // Owner 3
@@ -33,17 +33,17 @@ if (!global.db) {
 /* =========== Config ========== */
 const { config } = client;
 config.info = { 
-  nameBot: "♡ 𝒁𝑬𝑰𝑹𝑨𝑴 🎪 〈", 
-  nameChannel: "arise ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️", 
+  nameBot: "♡ 𝒁𝑬𝑰𝑹𝑨𝑴 ⚘️ 〈", 
+  nameChannel: "arise", 
   idChannel: "@newsletter",
   urls: {
     repo: "https://github.com/deveni0/Pomni-AI",
     api: "https://emam-api.web.id",
-    channel: "https://whatsapp.com/channel/0029VaQim2bAu3aPsRVaDq3v"
+    channel: "https://whatsapp.com/channel/0029VbD9pJnEKyZAhN247W2V"
   },
   copyright: { 
-    pack: 'ڤـ ـ VA ـ ـا', 
-    author: 'VA'
+    pack: 'ڤـ ـ LC ـ ـا', 
+    author: 'LUCY'
   },
   images: [
     "https://i.pinimg.com/originals/11/26/97/11269786cdb625c60213212aa66273a9.png",
