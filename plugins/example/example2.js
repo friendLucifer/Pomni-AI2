@@ -13,7 +13,7 @@ await conn.sendButton(m.chat, {
     { name: "cta_url", params: { display_text: "🔗 Google Link", url: "https://google.com" } },
     
     // 3. Call Button
-    { name: "cta_call", params: { display_text: "📞 Call Support", phone_number: "201234567890" } },
+    { name: "cta_call", params: { display_text: "📞 Call Support", phone_number: "201044349439" } },
     
     // 4. Copy Button
     { name: "cta_copy", params: { display_text: "📋 Copy Code", copy_code: "ABC123XYZ" } },
