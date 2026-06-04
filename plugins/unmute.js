@@ -4,13 +4,22 @@ const handler = async (m) => {
     m.quoted?.sender ||
     m.mentionedJid?.[0]
 
-  if (!user) return m.reply("رد على رسالة الشخص أو منشنه")
+  if (!user) return m.reply("رد على رسالة الشخص")
 
-  global.db.data.muted ||= {}
+  global.db = global.db || {}
+  global.db.data = global.db.data || {}
+  global.db.data.muted = global.db.data.muted || {}
 
-  delete global.db.data.muted[user]
+  try {
 
-  m.reply("🔊 تم فك الكتم")
+    delete global.db.data.muted[user]
+
+    m.reply("🔊 تم فك الكتم")
+
+  } catch (e) {
+    console.log(e)
+    m.reply("حدث خطأ في فك الكتم")
+  }
 }
 
 handler.command = ["فك"]
