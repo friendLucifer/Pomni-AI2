@@ -1,11 +1,13 @@
-const handler = async (m, { conn }) => {
+const handler = async (m) => {
 
-  let user = m.mentionedJid?.[0]
-  if (!user) return m.reply("منشن الشخص الذي تريد كتمه")
+  let user =
+    m.quoted?.sender ||
+    m.mentionedJid?.[0]
+
+  if (!user) return m.reply("رد على رسالة الشخص الذي تريد كتمه")
 
   global.db.data.muted ||= {}
 
-  // ساعتين = 2 * 60 * 60 * 1000 ms
   global.db.data.muted[user] = {
     time: Date.now() + (2 * 60 * 60 * 1000)
   }
