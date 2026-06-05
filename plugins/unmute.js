@@ -6,18 +6,14 @@ const handler = async (m) => {
 
   if (!user) return m.reply("رد على رسالة الشخص أو منشنه")
 
-  global.db.data.muted ||= {}
+  global.muted ||= {}
 
-  if (!global.db.data.muted[user]) {
-    return m.reply("هذا العضو غير مكموت أصلاً")
-  }
-
-  delete global.db.data.muted[user]
+  delete global.muted[user]
 
   m.reply("🔊 تم فك الكتم")
 }
 
-handler.command = ["فك", "فك_كتم", "unmute"]
+handler.command = ["فك", "فك_كتم"]
 handler.admin = true
 handler.group = true
 
