@@ -1,9 +1,38 @@
-import { Client } from 'meowsab';
-import { group, access } from "./system/control.js";
-import UltraDB from "./system/UltraDB.js";
-import sub from './sub.js';
+import { Client } from 'meowsab'
+import UltraDB from "./system/UltraDB.js"
+import sub from './sub.js'
+import { group, access } from "./system/control.js"
 
-/* =========== Client ========== */
+/* =========================
+   DATABASE (HARD INIT)
+========================= */
+global.db = new UltraDB()
+
+global.db.data ||= {}
+global.db.data.users ||= {}
+global.db.data.stats ||= {}
+global.db.data.stats.daily ||= {}
+global.db.data.muted ||= {}
+
+/* =========================
+   HELPERS
+========================= */
+
+// لقب
+global.setNickname = (jid, nickname) => {
+  global.db.data.users[jid] ||= {}
+  global.db.data.users[jid].nickname = nickname
+}
+
+// إحصائيات يومية
+global.addDaily = (jid) => {
+  global.db.data.stats.daily[jid] ||= 0
+  global.db.data.stats.daily[jid]++
+}
+
+/* =========================
+   CLIENT
+========================= */
 const client = new Client({
   phoneNumber: '201558880127',
   prefix: [".", "/", "!"],
@@ -13,29 +42,27 @@ const client = new Client({
   ],
   settings: { noWelcome: false },
   commandsPath: './plugins'
-});
+})
 
-client.onGroupEvent(group);
-client.onCommandAccess(access);
+client.onGroupEvent(group)
+client.onCommandAccess(access)
 
-/* 🔴 MUTE SYSTEM (ADDED) */
+/* =========================
+   MUTE SYSTEM
+========================= */
 client.onMessage(async (m) => {
-
   try {
 
-    global.db.data.muted ||= {}
+    global.addDaily(m.sender)
 
     const muted = global.db.data.muted[m.sender]
-
     if (!muted) return
 
-    // انتهاء مدة الكتم
     if (Date.now() > muted.time) {
       delete global.db.data.muted[m.sender]
       return
     }
 
-    // حذف رسالة المكموت
     if (m.delete) {
       await m.delete()
     } else {
@@ -49,16 +76,12 @@ client.onMessage(async (m) => {
   } catch (e) {
     console.log("Mute error:", e)
   }
+})
 
-});
-
-/* =========== Database ========== */
-if (!global.db) {
-  global.db = new UltraDB();
-}
-
-/* =========== Config ========== */
-const { config } = client;
+/* =========================
+   CONFIG
+========================= */
+const { config } = client
 
 config.info = {
   nameBot: "♡ 𝒁𝑬𝑰𝑹𝑨𝑴 ⚘️ 〈",
@@ -72,6 +95,30 @@ config.info = {
   copyright: {
     pack: 'ڤـ ـ LC ـ ـا',
     author: 'LUCY'
+  }
+}
+
+/* =========================
+   START BOT
+========================= */
+client.start()
+
+setTimeout(() => {
+  if (client.commandSystem) {
+    sub(client)
+  }
+}, 2000)
+
+/* =========================
+   ERROR HANDLING
+========================= */
+process.on('uncaughtException', (e) => {
+  if (e.message.includes('rate-overlimit')) return
+})
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err)
+})    author: 'LUCY'
   }
 };
 
