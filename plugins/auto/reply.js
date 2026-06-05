@@ -17,10 +17,68 @@ export default async function before(m, { conn }) {
     "لوسيفر بيسلم عليك": ["مين يعني؟"]
   };
 
+  /* =========================
+     الردود العادية
+  ========================= */
+
   const replies = triggers[text];
 
   if (replies) {
     const reply = replies[Math.floor(Math.random() * replies.length)];
     await m.reply(reply);
+    return;
+  }
+
+  /* =========================
+     دا ثانويه عامه
+  ========================= */
+
+  if (text.includes("دا ثانويه عامه")) {
+
+    if (!m.quoted) return
+
+    const laugh =
+`😂😂😂😂😂😂
+هههههههههههههههههههههههههههههههه
+هههههههههههههههههههههههههههههههه
+روح ذاكر 📚`
+
+    await conn.sendMessage(m.chat, {
+      text: laugh,
+      contextInfo: {
+        stanzaId: m.quoted.key?.id,
+        participant: m.quoted.key?.participant,
+        mentionedJid: [m.quoted.sender || m.sender]
+      }
+    }, { quoted: m })
+
+    return
+  }
+
+  /* =========================
+     السلام عليكم المطور
+  ========================= */
+
+  if (
+    text.includes("وعليكم السلام") ||
+    text.includes("وعليكم السلام ورحمة الله") ||
+    text.includes("وعليكم السلام ورحمة الله وبركاته")
+  ) {
+
+    if (!m.quoted) {
+      await m.reply("وصلي على النبي ﷺ 🤍")
+      return
+    }
+
+    await conn.sendMessage(m.chat, {
+      text: "وصلي على النبي ﷺ 🤍",
+      contextInfo: {
+        stanzaId: m.quoted.key?.id,
+        participant: m.quoted.key?.participant,
+        mentionedJid: [m.quoted.sender || m.sender]
+      }
+    }, { quoted: m })
+
+    return
   }
 }
