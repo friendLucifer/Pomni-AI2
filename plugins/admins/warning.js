@@ -51,7 +51,7 @@ handler.before = async (m, { conn }) => {
 
 handler.command = ["انذار", "تحذير", "warn"];
 handler.usage = ['انذار'];
-handler.category = "admin";
+handler.category = "owner";
 handler.admin = true;
 handler.botAdmin = true
 
