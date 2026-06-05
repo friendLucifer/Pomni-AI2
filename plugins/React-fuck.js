@@ -11,22 +11,21 @@ const handler = async (m, { conn }) => {
   }
 
   if (!m.quoted) {
-    return m.reply("❌ رد على رسالة لو كنت ناغومو")
+    return m.reply("❌ لازم ترد على رسالة")
   }
 
-  try {
-
-    await conn.sendMessage(m.chat, {
-      react: {
-        text: "🖕🏿",
-        key: m.quoted.key || m.quoted?.key || m.key
-      }
-    })
-
-  } catch (e) {
-    console.log(e)
-    m.reply("❌ لم يعمل الريأكت")
+  const key = m.quoted?.key || {
+    id: m.quoted.id,
+    remoteJid: m.chat,
+    fromMe: false
   }
+
+  await conn.sendMessage(m.chat, {
+    react: {
+      text: "🖕🏿",
+      key
+    }
+  })
 
 }
 
