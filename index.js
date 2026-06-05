@@ -1,110 +1,86 @@
-import { Client } from 'meowsab'
-import { group, access } from "./system/control.js"
-import UltraDB from "./system/UltraDB.js"
-import sub from './sub.js'
+import { Client } from 'meowsab';
+import { group, access } from "./system/control.js";
+import UltraDB from "./system/UltraDB.js";
+import sub from './sub.js';
 
-/* =========================
-   DATABASE (MUST FIRST)
-========================= */
-global.db = new UltraDB()
-
-global.db.data ||= {}
-global.db.data.users ||= {}
-global.db.data.stats ||= {}
-global.db.data.stats.daily ||= {}
-global.db.data.muted ||= {}
-
-/* =========================
-   CLIENT
-========================= */
+/* =========== Client ========== */
 const client = new Client({
-  phoneNumber: '201558880127',
+  phoneNumber: '201558880127', // Bot number
   prefix: [".", "/", "!"],
-  fromMe: false,
+  fromMe: false, 
   owners: [
-    { name: "Lucifer", jid: "201044349439@s.whatsapp.net" }
+  // Owner 1
+    { name: "Lucifer", lid: "247579682029763@lid", jid: "201044349439@s.whatsapp.net" },
+  // Owner 2
+    { name: "emam", lid: "221307316789354@lid", jid: "201044349439@s.whatsapp.net" },
+  // Owner 3
+    { name: "Sukuna", jid: "201033024135@s.whatsapp.net", lid: "50414477168824@lid" },
+  // Owner 4 
+   { name: "عمورتي", jid: "201050079089@s.whatsapp.net", lid: "51664513925368@lid" }
   ],
   settings: { noWelcome: false },
   commandsPath: './plugins'
-})
+});
 
-/* =========================
-   SAFETY: GROUP EVENTS (SAFE)
-========================= */
-try {
-  client.onGroupEvent(group)
-} catch (e) {
-  console.log("GroupEvent Error:", e)
+client.onGroupEvent(group);
+client.onCommandAccess(access);
+
+/* =========== Database ========== */
+if (!global.db) {
+    global.db = new UltraDB();
 }
 
-/* =========================
-   ACCESS (SAFE WRAP)
-   ⚠️ إذا سبب مشاكل → لا يوقف البوت
-========================= */
-try {
-  client.onCommandAccess(access)
-} catch (e) {
-  console.log("Access Error:", e)
-}
+/* =========== Config ========== */
+const { config } = client;
+config.info = { 
+  nameBot: "♡ 𝒁𝑬𝑰𝑹𝑨𝑴 ⚘️ 〈", 
+  nameChannel: "arise", 
+  idChannel: "@newsletter",
+  urls: {
+    repo: "https://github.com/deveni0/Pomni-AI",
+    api: "https://emam-api.web.id",
+    channel: "https://whatsapp.com/channel/0029VbD9pJnEKyZAhN247W2V"
+  },
+  copyright: { 
+    pack: 'ڤـ ـ LC ـ ـا', 
+    author: 'LUCY'
+  },
+  images: [
+    "https://i.pinimg.com/originals/11/26/97/11269786cdb625c60213212aa66273a9.png",
+    "https://i.pinimg.com/originals/e2/21/20/e221203f319df949ee65585a657501a2.jpg",
+    "https://i.pinimg.com/originals/bb/77/0f/bb770fad66a634a6b3bf93e9c00bf4e5.jpg"
+  ]
+};
 
-/* =========================
-   MUTE SYSTEM (SAFE)
-========================= */
-client.onMessage(async (m) => {
-  try {
+/* =========== Start ========== */
+client.start();
 
-    const user = m.sender
-
-    global.db.data.muted ||= {}
-
-    const muted = global.db.data.muted[user]
-
-    if (!muted) return
-
-    if (Date.now() > muted.time) {
-      delete global.db.data.muted[user]
-      return
-    }
-
-    try {
-      if (m.delete) {
-        await m.delete()
-      } else {
-        await client.sendMessage(m.chat, {
-          delete: m.key
-        })
-      }
-    } catch {}
-
-    return false
-
-  } catch (e) {
-    console.log("Mute error:", e)
+setTimeout(async () => {
+if (client.commandSystem) { 
+sub(client)
   }
-})
+}, 2000);
 
-/* =========================
-   START BOT
-========================= */
-client.start()
 
-setTimeout(() => {
-  try {
-    if (client.commandSystem) {
-      sub(client)
-    }
-  } catch (e) {
-    console.log("Sub Error:", e)
-  }
-}, 2000)
-
-/* =========================
-   GLOBAL ERROR HANDLING
-========================= */
+/* =========== Catch Errors ========== */
 process.on('uncaughtException', (e) => {
-  console.log("CRASH:", e)
-})
+    if (e.message.includes('rate-overlimit')) {}
+});
 
 process.on('unhandledRejection', (err) => {
-  console.log("PROMISE ERROR:", err)
-})
+    console.error('Unhandled Rejection:', err)
+});
+
+
+/* 
+=========== Memory Monitor ========== 
+
+setInterval(() => {
+    const used = process.memoryUsage().rss / 1024 / 1024
+    if (used > 800) {
+        console.log(`🔄 Bot memory full (${used.toFixed(1)}MB), restarting...`)
+        process.exit(1) 
+    }
+}, 300_000) 
+
+*/
