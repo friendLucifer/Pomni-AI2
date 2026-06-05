@@ -2,13 +2,12 @@ import { SubBots } from "meowsab";
 
 async function sub(client) {
 
-  global.subBots = new SubBots(client.commandSystem)
-  
-  SubBots.pariCode("ABCD1234") // Pairing
- 
+  global.subBots = new SubBots(client.commandSystem);
+
+  SubBots.pariCode("ABCD1234"); // Pairing
+
   const { config } = client;
 
- 
   await global.subBots.setConfig({
     commandsPath: config.commandsPath || './plugins',
     owners: config.owners,
@@ -24,7 +23,7 @@ async function sub(client) {
   const loadedCount = await global.subBots.load();
   console.log(`✅ Loaded ${loadedCount} saved bots`);
 
-  global.subBots.on('ready', async (uid, sock) => {
+  global.subBots.on('ready', async (uid) => {
     console.log(`✅ [SubBot ${uid}] Connected!`);
   });
 
@@ -32,8 +31,12 @@ async function sub(client) {
     console.log(`🔐 [SubBot ${uid}] Pairing code: ${code}`);
   });
 
+  /* ===================== */
+  /* 🔇 MUTE SYSTEM (NEW)  */
+  /* ===================== */
 
   global.subBots.on('message', async (uid, msg) => {
+
     if (msg.key.id.includes("3EB0")) return;
 
     const body = getMessageText(msg);
@@ -43,11 +46,28 @@ async function sub(client) {
     if (!sock || !body) return;
 
     try {
+
+      // 🔴 MUTE CHECK (REAL SYSTEM)
+      global.db.data.muted ||= {}
+
+      const id = msg.key.participant || msg.key.remoteJid
+      const muted = global.db.data.muted[id]
+
+      if (muted) {
+
+        // انتهاء الكتم
+        if (Date.now() > muted.time) {
+          delete global.db.data.muted[id]
+        } else {
+          return // 🔇 منع الرسالة بالكامل
+        }
+      }
+
+      /* ===== TEST ===== */
       if (body === "تست") {
-    await sock.sendMessage(msg.key.
-        remoteJid, {
-        react: { text: "✅", key: msg.key }
-       });
+        await sock.sendMessage(msg.key.remoteJid, {
+          react: { text: "✅", key: msg.key }
+        });
       }
 
     } catch (error) {
@@ -66,12 +86,19 @@ async function sub(client) {
   return global.subBots;
 }
 
+/* ===================== */
+/* Helpers */
+/* ===================== */
+
 function getMessageText(msg) {
   if (!msg.message) return null;
   if (msg.message.conversation) return msg.message.conversation;
   if (msg.message.extendedTextMessage?.text) return msg.message.extendedTextMessage.text;
   if (msg.message.imageMessage?.caption) return msg.message.imageMessage.caption;
-  if (msg.message.videoMessage?.caption) return msg.message.videoMessage.caption;
+  return null;
+}
+
+export default sub;  if (msg.message.videoMessage?.caption) return msg.message.videoMessage.caption;
   return msg.body || null;
 }
 
