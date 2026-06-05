@@ -83,7 +83,7 @@ export default async function before(m, { conn }) {
   }
 
   /* =========================
-     VIP SYSTEM (الشخصيات)
+     VIP SYSTEM
   ========================= */
 
   const vip = {
@@ -119,7 +119,7 @@ export default async function before(m, { conn }) {
   };
 
   /* =========================
-     TRIGGER: زيرام أو نداء خاص
+     TRIGGER: زيرام
   ========================= */
 
   if (text === "زيرام") {
@@ -138,17 +138,6 @@ export default async function before(m, { conn }) {
     ]
 
     await m.reply(normal[Math.floor(Math.random() * normal.length)])
-    return
-  }
-}    await conn.sendMessage(m.chat, {
-      text: "وصلي على النبي ﷺ 🤍",
-      contextInfo: {
-        stanzaId: m.quoted.key?.id,
-        participant: m.quoted.key?.participant,
-        mentionedJid: [m.quoted.sender || m.sender]
-      }
-    }, { quoted: m })
-
     return
   }
 }
