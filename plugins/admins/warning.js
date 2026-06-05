@@ -2,7 +2,7 @@ const handler = async (m, { conn }) => {
   let targetLid = m.mentionedJid?.[0] || m.quoted?.sender;
   let targetJid = m.lid2jid(targetLid);
 
-  if (!targetJid || !targetLid) return m.reply('⚠️ *يرجى منشن الشخص أو الرد على رسالته* ⚠️');
+  if (!targetJid || !targetLid) return m.reply('⚠️ *الامر مخصص لي لوسيفر فقط* ⚠️');
 
   const user = (await conn.groupMetadata(m.chat)).participants.find(
     p => p.id === targetLid || p.phoneNumber === targetJid
@@ -20,10 +20,10 @@ const handler = async (m, { conn }) => {
     (db.groups[m.chat].warnings[id] || 0) + 1;
 
   await conn.sendMessage(m.chat, {
-    text: `⚠️ تم إعطاء إنذار
+    text: `⚠️ انت لست لوسيفر  
 
 👤: @${id.split("@")[0]}
-📊 عدد الإنذارات: ${warnCount}`,
+  : ${warnCount}`,
     mentions: [jid]
   }, { quoted: global.reply_status });
 };
