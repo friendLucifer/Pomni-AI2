@@ -2,6 +2,10 @@ export default async function before(m, { conn }) {
 
   const text = (m.body || m.text || "").trim();
 
+  /* =========================
+     TRIGGERS العادية
+  ========================= */
+
   const triggers = {
     "السلام عليكم": ["وعليكم السلام 🤎", "وعليكم السلام ورحمة الله ❤️"],
     "تست": ["عايز تقلش؟", "تست تست"],
@@ -16,10 +20,6 @@ export default async function before(m, { conn }) {
     "مازن بيكلمك": ["الله يسلمك يا دحيح"],
     "لوسيفر بيسلم عليك": ["مين يعني؟"]
   };
-
-  /* =========================
-     الردود العادية
-  ========================= */
 
   const replies = triggers[text];
 
@@ -56,7 +56,7 @@ export default async function before(m, { conn }) {
   }
 
   /* =========================
-     السلام عليكم المطور
+     السلام عليكم
   ========================= */
 
   if (
@@ -71,6 +71,76 @@ export default async function before(m, { conn }) {
     }
 
     await conn.sendMessage(m.chat, {
+      text: "وصلي على النبي ﷺ 🤍",
+      contextInfo: {
+        stanzaId: m.quoted.key?.id,
+        participant: m.quoted.key?.participant,
+        mentionedJid: [m.quoted.sender || m.sender]
+      }
+    }, { quoted: m })
+
+    return
+  }
+
+  /* =========================
+     VIP SYSTEM (الشخصيات)
+  ========================= */
+
+  const vip = {
+    "201140749033@s.whatsapp.net": {
+      name: "الإمبراطور",
+      reply: "👑⚡ تحت أمرك يا امبريور ⚡👑\n🍷 العالم كله في خدمتك يا إمبراطور"
+    },
+
+    "4915510468131@s.whatsapp.net": {
+      name: "لوسيفر",
+      reply: "❓ انت مين يا حبيبي؟"
+    },
+
+    "201055005266@s.whatsapp.net": {
+      name: "ناغومو",
+      reply: "🎖️ تحت امر القائد ناغومو"
+    },
+
+    "201090957996@s.whatsapp.net": {
+      name: "مازن",
+      reply: "🤍 تحت امر دحيح الدفعه مازن"
+    },
+
+    "201274272076@s.whatsapp.net": {
+      name: "ميتسوري",
+      reply: "🌸 تحت امر ميتسوري مؤسسة القلش"
+    },
+
+    "201091011979@s.whatsapp.net": {
+      name: "يامي",
+      reply: "🖤 تحت امر القدوه يامي"
+    }
+  };
+
+  /* =========================
+     TRIGGER: زيرام أو نداء خاص
+  ========================= */
+
+  if (text === "زيرام") {
+
+    const user = vip[m.sender]
+
+    if (user) {
+      await m.reply(user.reply)
+      return
+    }
+
+    const normal = [
+      "شبيك لبيك زيرام بين ايديك🤍🍷",
+      "أوامرك يا قائد 👑",
+      "في خدمتك دائمًا 🤍"
+    ]
+
+    await m.reply(normal[Math.floor(Math.random() * normal.length)])
+    return
+  }
+}    await conn.sendMessage(m.chat, {
       text: "وصلي على النبي ﷺ 🤍",
       contextInfo: {
         stanzaId: m.quoted.key?.id,
