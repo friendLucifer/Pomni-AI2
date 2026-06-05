@@ -11,7 +11,7 @@ const handler = async (m, { conn }) => {
   }
 
   if (!m.quoted) {
-    return m.reply("❌ لازم ترد على رسالة")
+    return m.reply("❌ لازم ترد على رسالة ولا انت مش ناغومو؟")
   }
 
   const key = m.quoted?.key || {
