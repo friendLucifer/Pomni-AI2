@@ -16,9 +16,9 @@ export default async function before(m, { conn }) {
   const badWords = [
     "كسمك",
     "كسم",
-    "عرض",
+    "قحبه",
     "عرص",
-    "حول",
+    "خول",
     "متناك",
     "شرموط"
   ]
