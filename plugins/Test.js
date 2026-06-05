@@ -1,11 +1,7 @@
-export default async function (m, { conn }) {
-  if (m.text === 'اختبار') {
-    await conn.sendMessage(m.chat, {
-      text: 'نظام البوت يعمل ✅'
-    })
-  }
+const handler = async (m) => {
+  m.reply("البوت يعمل ✅")
 }
 
-export const handler = {
-  all: true
-}
+handler.command = ["test"]
+
+export default handler
