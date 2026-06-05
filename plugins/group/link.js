@@ -3,7 +3,7 @@ let handler = async (m, {
 }) => {
     try {
         m.reply(`❀° ┄──────────╮
-🌷┊ *رابـــط الـــمـــجـــمـــوعـــة:* ${(await conn.groupMetadata(m.chat)).subject}
+🌷┊ *رابـــط متصدعناش بقي:* ${(await conn.groupMetadata(m.chat)).subject}
 🌷┊
 🌷┊ https://chat.whatsapp.com/` + await conn.groupInviteCode(m.chat) + `
 🌷┊
@@ -19,7 +19,7 @@ let handler = async (m, {
         })
     }
 }
-handler.usage = ["لينك"];
+handler.usage = ["لينك زيرام"];
 handler.category = "group";
 handler.command = ["لينك", "link"];
 handler.group = true;
