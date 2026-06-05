@@ -1,89 +1,49 @@
-import { createCanvas, loadImage } from "canvas"
+import { createCanvas } from "canvas"
 
-export default async function group(m, { conn }) {
+export default async function groupUpdate(update, { conn }) {
 
-  if (!m.isGroup) return
+  const { id, participants, action } = update
+
+  if (!id || !participants) return
 
   const db = global.db || (global.db = {})
   db.groups ||= {}
-  const g = db.groups[m.chat] ||= {}
+  const g = db.groups[id] ||= {}
 
-  const users = m.participants || []
-
-  for (let user of users) {
+  for (let user of participants) {
 
     const tag = user.split('@')[0]
 
     /* =========================
        دخول عضو
     ========================= */
-    if (m.action === "add") {
+    if (action === "add") {
 
       if (g.noWelcome) return
 
-      try {
-
-        const canvas = createCanvas(800, 450)
-        const ctx = canvas.getContext("2d")
-
-        // خلفية سوداء
-        ctx.fillStyle = "#0f0f0f"
-        ctx.fillRect(0, 0, 800, 450)
-
-        // إطار ذهبي
-        ctx.strokeStyle = "#d4af37"
-        ctx.lineWidth = 5
-        ctx.strokeRect(10, 10, 780, 430)
-
-        // النص الأساسي
-        ctx.fillStyle = "#ffffff"
-        ctx.font = "28px Sans"
-
-        ctx.fillText("Welcome To ARISE 🍷", 200, 80)
-
-        ctx.font = "20px Sans"
-        ctx.fillText(`User: @${tag}`, 250, 150)
-
-        ctx.fillText("حللت أهلاً ووطئت سهلاً", 180, 220)
-        ctx.fillText("نورت المكان بوجودك", 220, 260)
-
-        const buffer = canvas.toBuffer()
-
-        await conn.sendMessage(m.chat, {
-          image: buffer,
-          caption: `
+      await conn.sendMessage(id, {
+        text: `
 ❉『 𝑨.𝑹.𝑺 ⊰🍷⊱ 𝑨𝑹𝑰𝑺𝑬 』 ❉
 
-*✧ ┈➤ انضم عضو جديد*
+*❀╎اســتـمـارة الـتـرحـيـب ╎❀*
 
-👤 @${tag}
+*━╍∘✦∘╍━⌟🍷⌜━╍∘✦∘╍━*
 
-*مرحبا بك في العائلة 🍷*
-          `.trim(),
-          mentions: [user]
-        })
+*✧ ┈➤ حللت أهلاً ووطئت سهلاً، نوّرت المكان بوجودك*
 
-      } catch (e) {
+*✧ ┈➤ انضمامك لـ ┆𝑨𝑹𝑰𝑺𝑬 شرف لنا ومكسب كبير*
 
-        // fallback لو canvas ما اشتغل
-        await conn.sendMessage(m.chat, {
-          text: `👋 مرحباً @${tag} في ARISE 🍷`,
-          mentions: [user]
-        })
+*✧ ┈➤ معك تكبر العائلة وتقوى، وبك تزيد الهيبة*
 
-      }
-    }
+*✧ ┈➤ عساك تذوق معنا طعم الإنجاز وتكتب اسمك بين المميزين*
 
-    /* =========================
-       خروج عضو
-    ========================= */
-    if (m.action === "remove") {
+*❁ ┆ ┈➤ الـمـسـؤول ✧ ⤶ 『زيرام 』*
 
-      await conn.sendMessage(m.chat, {
-        text: `
-💔 *غادر العضو الجروب*
+*📌 يُرجى زيارة رابط الإعلانات الرسمي للاطلاع على جديد في الوصف 』*
 
-😒 أبو تقل دمك مكنتش بحبك
+*━╍∘✦∘╍━🍷⌜━╍∘✦∘╍━*
+
+*♤┆تـوقـيـ؏ اداࢪة مــمـلـكة 🇵🇸『 𝑨.𝑹.𝑺 ⊰🍷⊱ 𝑨𝑹𝑰𝑺𝑬 』╎*
 
 👤 @${tag}
         `.trim(),
@@ -91,5 +51,21 @@ export default async function group(m, { conn }) {
       })
     }
 
+    /* =========================
+       خروج عضو
+    ========================= */
+    if (action === "remove") {
+
+      await conn.sendMessage(id, {
+        text: `
+💔 *غادر العضو الجروب*
+
+😒 ابو تقل دمك مكنتش بحبك اصلا
+
+👤 @${tag}
+        `.trim(),
+        mentions: [user]
+      })
+    }
   }
 }
