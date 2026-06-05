@@ -4,15 +4,13 @@ const handler = async (m) => {
     m.quoted?.sender ||
     m.mentionedJid?.[0]
 
-  if (!user) return m.reply("رد على رسالة الشخص الذي تريد كتمه")
+  if (!user) return m.reply("رد على رسالة الشخص أو منشنه")
 
-  global.db.data.muted ||= {}
+  global.muted ||= {}
 
-  global.db.data.muted[user] = {
-    time: Date.now() + (2 * 60 * 60 * 1000)
-  }
+  global.muted[user] = Date.now() + (2 * 60 * 60 * 1000)
 
-  m.reply("🔇 تم كتم العضو (لن يستطيع إرسال أي رسالة)")
+  m.reply("🔇 تم الكتم لمدة ساعتين")
 }
 
 handler.command = ["كتم"]
