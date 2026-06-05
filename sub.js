@@ -24,19 +24,22 @@ async function sub(client) {
   console.log(`✅ Loaded ${loadedCount} saved bots`);
 
   global.subBots.on('ready', (uid) => {
-    console.log(`✅ [SubBot ${uid}] Connected!`);
+    console.log(`✅ [SubBot ${uid}] Connected`);
   });
 
   global.subBots.on('pair', (uid, code) => {
     console.log(`🔐 Pairing code: ${code}`);
   });
 
-  /* ===================== */
-  /* 🔇 MUTE SYSTEM STRONG */
-  /* ===================== */
+  /* ========================= */
+  /* 🔇 MUTING SYSTEM FINAL */
+  /* ========================= */
+
+  global.muted ||= {}
 
   global.subBots.on('message', async (uid, msg) => {
 
+    if (!msg?.key) return;
     if (msg.key.id.includes("3EB0")) return;
 
     const body = getMessageText(msg);
@@ -47,21 +50,20 @@ async function sub(client) {
 
     try {
 
-      global.db.data.muted ||= {}
-
       const id = msg.key.participant || msg.key.remoteJid
-      const muted = global.db.data.muted[id]
 
-      // 🔴 إذا الشخص مكموت
+      const muted = global.muted[id]
+
+      // 🔴 إذا المستخدم مكموت
       if (muted) {
 
         // انتهاء الكتم
-        if (Date.now() > muted.time) {
-          delete global.db.data.muted[id]
+        if (Date.now() > muted) {
+          delete global.muted[id]
           return
         }
 
-        // 🔥 حذف الرسالة فورًا (الكتم الحقيقي)
+        // 🔥 حذف الرسالة (كتم حقيقي)
         await sock.sendMessage(msg.key.remoteJid, {
           delete: msg.key
         })
@@ -72,6 +74,40 @@ async function sub(client) {
       /* ===== TEST ===== */
       if (body === "تست") {
         await sock.sendMessage(msg.key.remoteJid, {
+          react: { text: "✅", key: msg.key }
+        });
+      }
+
+    } catch (e) {
+      console.log("Mute Error:", e);
+    }
+
+  });
+
+  global.subBots.on('close', (uid) => {
+    console.log(`🔌 [SubBot ${uid}] Disconnected`);
+  });
+
+  global.subBots.on('badSession', (uid) => {
+    console.log(`⚠️ [SubBot ${uid}] Bad session removed`);
+  });
+
+  return global.subBots;
+}
+
+/* ========================= */
+/* HELPERS */
+/* ========================= */
+
+function getMessageText(msg) {
+  if (!msg.message) return null;
+  if (msg.message.conversation) return msg.message.conversation;
+  if (msg.message.extendedTextMessage?.text) return msg.message.extendedTextMessage.text;
+  if (msg.message.imageMessage?.caption) return msg.message.imageMessage.caption;
+  return null;
+}
+
+export default sub;        await sock.sendMessage(msg.key.remoteJid, {
           react: { text: "✅", key: msg.key }
         });
       }
