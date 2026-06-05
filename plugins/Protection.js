@@ -15,9 +15,9 @@ export default async function before(m, { conn }) {
   const badWords = [
     "كسمك",
     "كسم",
-    "قحبه",
+    "عرض",
     "عرص",
-    "خول",
+    "حول",
     "متناك",
     "شرموط"
   ]
@@ -122,76 +122,3 @@ export default async function before(m, { conn }) {
 
   return false
 }
-      await conn.sendMessage(m.chat, {
-        text: `🚨 *تحذير نهائي*\n\n⚠️ عضو وصل 3 مخالفات روابط\n👮 تم تنبيه المشرفين`,
-        mentions: admins
-      })
-
-      global.warn[user] = 0
-      return true
-    }
-
-    await conn.sendMessage(m.chat, {
-      text: `🚨 *مخالفة رابط*\n\n⚠️ تم حذف رسالة\n📊 التحذيرات: ${count}/3`,
-      mentions: admins
-    })
-
-    return true
-  }
-
-  /* =========================
-     Anti-Swear
-  ========================= */
-  const isBad = badWords.some(w => cleanText.includes(w))
-
-  if (isBad) {
-
-    await conn.sendMessage(m.chat, { delete: m.key })
-
-    const count = addWarn(user)
-
-    if (count >= 3) {
-
-      await conn.sendMessage(m.chat, {
-        text: `🚨 *تحذير نهائي*\n\n⚠️ عضو وصل 3 مخالفات لفظية\n👮 تم تنبيه المشرفين`,
-        mentions: admins
-      })
-
-      global.warn[user] = 0
-      return true
-    }
-
-    await conn.sendMessage(m.chat, {
-      text: `🚨 *مخالفة لفظية*\n\n⚠️ تم حذف رسالة\n📊 التحذيرات: ${count}/3`,
-      mentions: admins
-    })
-
-    return true
-  }
-
-  /* =========================
-     Anti-Spam (نصوص)
-  ========================= */
-  const now = Date.now()
-
-  global.spam[user] ||= { count: 0, last: now }
-
-  const diff = now - global.spam[user].last
-
-  if (diff < 5000) {
-    global.spam[user].count += 1
-  } else {
-    global.spam[user].count = 1
-  }
-
-  global.spam[user].last = now
-
-  if (global.spam[user].count >= 7) {
-
-    await conn.sendMessage(m.chat, { delete: m.key })
-
-    const count = addWarn(user)
-
-    global.spam[user].count = 0
-
-    if (
