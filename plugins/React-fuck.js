@@ -14,12 +14,19 @@ const handler = async (m, { conn }) => {
     return m.reply("❌ رد على رسالة لو كنت ناغومو")
   }
 
-  await conn.sendMessage(m.chat, {
-    react: {
-      text: "🖕🏿",
-      key: m.quoted.key
-    }
-  })
+  try {
+
+    await conn.sendMessage(m.chat, {
+      react: {
+        text: "🖕🏿",
+        key: m.quoted.key || m.quoted?.key || m.key
+      }
+    })
+
+  } catch (e) {
+    console.log(e)
+    m.reply("❌ لم يعمل الريأكت")
+  }
 
 }
 
