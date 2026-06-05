@@ -1,9 +1,22 @@
-import { Client } from 'meowsab';
-import { group, access } from "./system/control.js";
-import UltraDB from "./system/UltraDB.js";
-import sub from './sub.js';
+import { Client } from 'meowsab'
+import { group, access } from "./system/control.js"
+import UltraDB from "./system/UltraDB.js"
+import sub from './sub.js'
 
-/* =========== Client ========== */
+/* =========================
+   DATABASE (MUST FIRST)
+========================= */
+global.db = new UltraDB()
+
+global.db.data ||= {}
+global.db.data.users ||= {}
+global.db.data.stats ||= {}
+global.db.data.stats.daily ||= {}
+global.db.data.muted ||= {}
+
+/* =========================
+   CLIENT
+========================= */
 const client = new Client({
   phoneNumber: '201558880127',
   prefix: [".", "/", "!"],
@@ -13,82 +26,85 @@ const client = new Client({
   ],
   settings: { noWelcome: false },
   commandsPath: './plugins'
-});
+})
 
-client.onGroupEvent(group);
-client.onCommandAccess(access);
+/* =========================
+   SAFETY: GROUP EVENTS (SAFE)
+========================= */
+try {
+  client.onGroupEvent(group)
+} catch (e) {
+  console.log("GroupEvent Error:", e)
+}
 
-/* 🔴 MUTE SYSTEM (ADDED) */
+/* =========================
+   ACCESS (SAFE WRAP)
+   ⚠️ إذا سبب مشاكل → لا يوقف البوت
+========================= */
+try {
+  client.onCommandAccess(access)
+} catch (e) {
+  console.log("Access Error:", e)
+}
+
+/* =========================
+   MUTE SYSTEM (SAFE)
+========================= */
 client.onMessage(async (m) => {
-
   try {
+
+    const user = m.sender
 
     global.db.data.muted ||= {}
 
-    const muted = global.db.data.muted[m.sender]
+    const muted = global.db.data.muted[user]
 
     if (!muted) return
 
-    // انتهاء مدة الكتم
     if (Date.now() > muted.time) {
-      delete global.db.data.muted[m.sender]
+      delete global.db.data.muted[user]
       return
     }
 
-    // حذف رسالة المكموت
-    if (m.delete) {
-      await m.delete()
-    } else {
-      await client.sendMessage(m.chat, {
-        delete: m.key
-      })
-    }
+    try {
+      if (m.delete) {
+        await m.delete()
+      } else {
+        await client.sendMessage(m.chat, {
+          delete: m.key
+        })
+      }
+    } catch {}
 
     return false
 
   } catch (e) {
     console.log("Mute error:", e)
   }
+})
 
-});
+/* =========================
+   START BOT
+========================= */
+client.start()
 
-/* =========== Database ========== */
-if (!global.db) {
-  global.db = new UltraDB();
-}
-
-/* =========== Config ========== */
-const { config } = client;
-
-config.info = {
-  nameBot: "♡ 𝒁𝑬𝑰𝑹𝑨𝑴 ⚘️ 〈",
-  nameChannel: "arise",
-  idChannel: "@newsletter",
-  urls: {
-    repo: "https://github.com/deveni0/Pomni-AI",
-    api: "https://emam-api.web.id",
-    channel: "https://whatsapp.com/channel/0029VbD9pJnEKyZAhN247W2V"
-  },
-  copyright: {
-    pack: 'ڤـ ـ LC ـ ـا',
-    author: 'LUCY'
+setTimeout(() => {
+  try {
+    if (client.commandSystem) {
+      sub(client)
+    }
+  } catch (e) {
+    console.log("Sub Error:", e)
   }
-};
+}, 2000)
 
-/* =========== Start ========== */
-client.start();
-
-setTimeout(async () => {
-  if (client.commandSystem) {
-    sub(client)
-  }
-}, 2000);
-
-/* =========== Catch Errors ========== */
+/* =========================
+   GLOBAL ERROR HANDLING
+========================= */
 process.on('uncaughtException', (e) => {
-  if (e.message.includes('rate-overlimit')) {}
-});
+  console.log("CRASH:", e)
+})
 
 process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Rejection:', err)
-});
+  console.log("PROMISE ERROR:", err)
+})
