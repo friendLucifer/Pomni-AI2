@@ -187,6 +187,6 @@ async function handler(m, { conn, command, args }) {
 
 handler.usage = ['تفعيل'];
 handler.category = 'admin';
-handler.command = ['تفعيل'];
+handler.command = ['كريستيانوكريمنيانو];
 
 export default handler;
