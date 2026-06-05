@@ -32,46 +32,80 @@ async function sub(client) {
   });
 
   /* ========================= */
-  /* 🔇 MUTING SYSTEM FINAL */
+  /* 🔇 MUTE SYSTEM (FINAL FIX) */
   /* ========================= */
 
   global.muted ||= {}
 
   global.subBots.on('message', async (uid, msg) => {
 
-    if (!msg?.key) return;
-    if (msg.key.id.includes("3EB0")) return;
-
-    const body = getMessageText(msg);
-    const bot = global.subBots.get(uid);
-    const sock = bot?.sock;
-
-    if (!sock) return;
-
     try {
 
-      const id = msg.key.participant || msg.key.remoteJid
+      if (!msg?.key) return
 
-      const muted = global.muted[id]
+      const bot = global.subBots.get(uid)
+      const sock = bot?.sock
+      if (!sock) return
 
-      // 🔴 إذا المستخدم مكموت
-      if (muted) {
+      const chatId = msg.key.remoteJid
+
+      // 🔥 تحديد هوية المرسل بشكل قوي (حل كل مشاكل id)
+      const sender =
+        msg.key.participant ||
+        msg.key.remoteJid ||
+        msg.sender
+
+      if (!sender) return
+
+      const mutedUntil = global.muted[sender]
+
+      // 🔇 إذا المستخدم مكموت
+      if (mutedUntil) {
 
         // انتهاء الكتم
-        if (Date.now() > muted) {
-          delete global.muted[id]
+        if (Date.now() > mutedUntil) {
+          delete global.muted[sender]
           return
         }
 
-        // 🔥 حذف الرسالة (كتم حقيقي)
-        await sock.sendMessage(msg.key.remoteJid, {
+        // 💀 حذف الرسالة فورًا
+        await sock.sendMessage(chatId, {
           delete: msg.key
         })
 
         return
       }
 
-      /* ===== TEST ===== */
+    } catch (e) {
+      console.log("Mute System Error:", e)
+    }
+
+  });
+
+  global.subBots.on('close', (uid) => {
+    console.log(`🔌 [SubBot ${uid}] Disconnected`);
+  });
+
+  global.subBots.on('badSession', (uid) => {
+    console.log(`⚠️ [SubBot ${uid}] Bad session removed`);
+  });
+
+  return global.subBots;
+}
+
+/* ========================= */
+/* HELPERS */
+/* ========================= */
+
+function getMessageText(msg) {
+  if (!msg.message) return null;
+  if (msg.message.conversation) return msg.message.conversation;
+  if (msg.message.extendedTextMessage?.text) return msg.message.extendedTextMessage.text;
+  if (msg.message.imageMessage?.caption) return msg.message.imageMessage.caption;
+  return null;
+}
+
+export default sub;      /* ===== TEST ===== */
       if (body === "تست") {
         await sock.sendMessage(msg.key.remoteJid, {
           react: { text: "✅", key: msg.key }
