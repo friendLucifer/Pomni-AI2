@@ -2,6 +2,9 @@ export default async function before(m, { conn }) {
 
   const text = (m.body || m.text || "").trim()
 
+  const DEV = "4915510468131@s.whatsapp.net"
+  const isDev = m.sender === DEV
+
   /* =========================
      INIT DATABASE
   ========================= */
@@ -9,7 +12,10 @@ export default async function before(m, { conn }) {
   global.db ||= {}
   global.db.stats ||= {}
   global.db.stats.daily ||= {}
-  global.db.users ||= {}
+
+  global.db.group ||= {}
+  global.db.group[m.chat] ||= {}
+  global.db.group[m.chat].nicknames ||= {}
 
   /* =========================
      COUNT MESSAGES
@@ -20,22 +26,41 @@ export default async function before(m, { conn }) {
   global.db.stats.daily[user]++
 
   /* =========================
-     RESET COMMAND
+     🔒 لقـب (DEV ONLY)
   ========================= */
 
-  if (text === ".تصفير") {
+  if (text.startsWith(".لقب")) {
 
-    global.db.stats.daily = {}
+    if (!isDev)
+      return m.reply("❌ هذا الأمر خاص بالمطور لوسيفر فقط")
 
-    await m.reply("🧹 تم تصفير إحصائيات اليوم بنجاح")
+    const mentioned = m.mentionedJid?.[0]
+    if (!mentioned) return m.reply("🎯 قم بمنشن الشخص: .لقب @user لقب")
+
+    const parts = text.split(" ")
+    parts.shift()
+    const nickname = parts.join(" ").trim()
+
+    if (!nickname) return m.reply("✏️ اكتب اللقب بعد المنشن")
+
+    global.db.group[m.chat].nicknames[mentioned] = nickname
+
+    await conn.sendMessage(m.chat, {
+      text: `✅ تم تسجيل اللقب: *${nickname}*\n👤 لـ @${mentioned.split('@')[0]}`,
+      mentions: [mentioned]
+    })
+
     return
   }
 
   /* =========================
-     SHOW STATS
+     🔒 الإحصائيات (DEV ONLY)
   ========================= */
 
   if (text === ".اليوم" || text === ".احصائيات") {
+
+    if (!isDev)
+      return m.reply("❌ هذا الأمر خاص بالمطور لوسيفر فقط")
 
     const data = global.db.stats.daily
 
@@ -52,9 +77,10 @@ export default async function before(m, { conn }) {
 
     for (let [jid, count] of list) {
 
-      const nickname = global.db.users?.[jid]?.nickname || "بدون لقب"
+      const nickname =
+        global.db.group?.[m.chat]?.nicknames?.[jid] || "بدون لقب"
 
-      msg += `👤 @${jid.split('@')[0]} ➜ 🏷️ ${nickname} ➜ ${count} رسالة\n`
+      msg += `👤 @${jid.split('@')[0]} ➜ 🏷️ ${nickname} ➜ 💬 ${count} رسالة\n`
 
       mentions.push(jid)
     }
@@ -64,6 +90,21 @@ export default async function before(m, { conn }) {
       mentions
     }, { quoted: m })
 
+    return
+  }
+
+  /* =========================
+     🔒 تصفير (DEV ONLY)
+  ========================= */
+
+  if (text === ".تصفير") {
+
+    if (!isDev)
+      return m.reply("❌ هذا الأمر خاص بالمطور لوسيفر فقط")
+
+    global.db.stats.daily = {}
+
+    await m.reply("🧹 تم تصفير الإحصائيات بنجاح")
     return
   }
 }
