@@ -43,6 +43,6 @@ const insta = async (m, { text, Api, conn }) => {
 };
 insta.usage = ["انستا"];
 insta.category = "downloads";
-insta.command = ["انستا", "instagram", "ig"];
+insta.command = ["انستاااااا", "iاااnstagram", "اig"];
 insta.admin = false;
 export default insta;
