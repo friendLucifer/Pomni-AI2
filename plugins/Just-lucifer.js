@@ -11,7 +11,7 @@ const handler = async (m, { conn }) => {
       "promote"
     )
 
-    await m.reply(" *⁦(⁠≧⁠▽⁠≦⁠)⁩تم رفعك إدمن يا لوسيفر*")
+    await m.reply(" *⁦⁠≧⁠▽⁠≦⁠⁩تم رفعك إدمن يا لوسيفر*")
 
   } catch (e) {
     await m.reply("❌ تأكد أن البوت أدمن في الجروب")
