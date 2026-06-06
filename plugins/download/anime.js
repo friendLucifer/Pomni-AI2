@@ -37,8 +37,8 @@ let handler = async (m, { conn, text, command }) => {
       ], 
       mentions: [m.sender],
       newsletter: {
-        name: '𝐕𝐈𝐈7 ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️',
-        jid: '120363225356834044@newsletter'
+        name:  ~  🕷️',
+        jid: 'ع@newsletter'
       },
     }, m)
   }
@@ -70,8 +70,8 @@ let handler = async (m, { conn, text, command }) => {
       ],
       mentions: [m.sender],
       newsletter: {
-        name: '𝐕𝐈𝐈7 ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️',
-        jid: '120363225356834044@newsletter'
+        name: ' ~  🕷️',
+        jid: '@newsletter'
       },
     }, m)
   }
@@ -105,9 +105,9 @@ let handler = async (m, { conn, text, command }) => {
         }}
       ],
       mentions: [m.sender],
-      newsletter: {
-        name: '𝐕𝐈𝐈7 ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️',
-        jid: '120363225356834044@newsletter'
+      newsletter: 
+        name: '~ 𝐂𝐚𝐧𝐧𝐞𝐥 ',
+        jid: '@newsletter'
       },
     }, m)
   }
@@ -127,8 +127,8 @@ let handler = async (m, { conn, text, command }) => {
   ], 
   mentions: [m.sender],
   newsletter: {
-      name: '𝐕𝐈𝐈7 ~ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 🕷️',
-      jid: '120363225356834044@newsletter'
+      name: ' ~ ',
+      jid: '@newsletter'
     },
 }, m)
   }
