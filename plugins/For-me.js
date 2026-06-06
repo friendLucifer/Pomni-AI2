@@ -3,57 +3,56 @@ global.botState ||= "on"
 // mute = صامت
 // admin = مشرفين فقط
 
-export default async function before(m, { conn }) {
-
-  if (!m.isGroup) return false
-
-  // جلب الأدمن
-  const getAdmins = async () => {
-    try {
-      const meta = await conn.groupMetadata(m.chat)
-      return meta.participants
-        .filter(p => p.admin)
-        .map(p => p.id)
-    } catch {
-      return []
-    }
+// تخزين مؤقت للأدمن (كل مرة يتحدث)
+const getAdmins = async (conn, m) => {
+  try {
+    const meta = await conn.groupMetadata(m.chat)
+    return meta.participants
+      .filter(p => p.admin === "admin" || p.admin === "superadmin")
+      .map(p => p.id)
+  } catch {
+    return []
   }
+}
 
-  const admins = await getAdmins()
+const handler = async (m, { conn, command }) => {
 
+  if (!m.isGroup) return
+
+  const admins = await getAdmins(conn, m)
   const isAdmin = admins.includes(m.sender)
 
-  const text = (m.text || "").trim()
-
-  // 🔇 اسكت يا زيرام (للأدمن)
-  if (text === "اسكت يا زيرام") {
+  // 🔇 shut
+  if (command === "shut") {
     if (!isAdmin) return m.reply("❌ للأدمن فقط")
     global.botState = "mute"
     return m.reply("🔇 تم إسكات البوت")
   }
 
-  // 🔊 اتكلم يا زيرام (للأدمن)
-  if (text === "اتكلم يا زيرام") {
+  // 🔊 good
+  if (command === "good") {
     if (!isAdmin) return m.reply("❌ للأدمن فقط")
     global.botState = "on"
     return m.reply("🔊 تم تشغيل البوت")
   }
 
-  // 🛡️ مشرفين فقط يا زيرام (للأدمن)
-  if (text === "مشرفين فقط يا زيرام") {
+  // 🛡️ toadmin
+  if (command === "toadmin") {
     if (!isAdmin) return m.reply("❌ للأدمن فقط")
     global.botState = "admin"
-    return m.reply("🛡️ البوت الآن يرد على المشرفين فقط")
+    return m.reply("🛡️ مشرفين فقط")
   }
 
-  // 🚫 إسكات كامل
-  if (global.botState === "mute") {
-    return true
-  }
+  // =========================
+  // الحالات (تطبيق الحالة على الرسائل)
+  // =========================
 
-  // 🛡️ مشرفين فقط
-  if (global.botState === "admin") {
-    if (!isAdmin) return true
-  }
+  if (global.botState === "mute") return
 
+  if (global.botState === "admin" && !isAdmin) return
 }
+
+handler.command = ["shut", "good", "toadmin"]
+handler.group = true
+
+export default handler
