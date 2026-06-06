@@ -1,10 +1,9 @@
+global.privateBan ||= {}
+
 const OWNER = "4915510468131@s.whatsapp.net"
 const LOG_GROUP = "BFHXZU5kovwFYFpt89xUX6@g.us"
 
-// قاعدة الحظر
-global.privateBan ||= {}
-
-export default async function before(m, { conn }) {
+const handler = async (m, { conn }) => {
 
   // فقط الخاص
   if (m.isGroup) return
@@ -12,28 +11,28 @@ export default async function before(m, { conn }) {
   // استثناء المطور
   if (m.sender === OWNER) return
 
-  // إذا محظور مسبقاً → تجاهل كامل
-  if (global.privateBan[m.sender]) return true
+  // إذا محظور مسبقاً
+  if (global.privateBan[m.sender]) return
 
   try {
 
-    // 🚫 تسجيل الحظر فوراً (أول مرة)
+    // تسجيل الحظر فوراً (أول مرة فقط)
     global.privateBan[m.sender] = {
       time: Date.now(),
       reason: "private_chat"
     }
 
-    // 📢 إرسال للجروب
+    // تنبيه في الجروب
     await conn.sendMessage(LOG_GROUP, {
       text: `🚨 *حظر تلقائي*
 
 👤 المستخدم: @${m.sender.split('@')[0]}
 ❌ حاول مراسلة البوت في الخاص
-🔒 تم حظره فوراً من البوت`,
+🔒 تم حظره فوراً`,
       mentions: [m.sender]
     })
 
-    // ❌ رد في الخاص
+    // رد في الخاص
     await conn.sendMessage(m.chat, {
       text: "🚫 تم حظرك من البوت\n❌ لا يمكنك مراسلتي مرة أخرى"
     })
@@ -41,6 +40,9 @@ export default async function before(m, { conn }) {
   } catch (e) {
     console.log("Private ban error:", e)
   }
-
-  return true
 }
+
+// 🔥 مهم جدًا عشان يشتغل على كل الرسائل
+handler.all = true
+
+export default handler
