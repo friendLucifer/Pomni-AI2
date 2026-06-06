@@ -50,6 +50,28 @@ export default async function before(m, { conn }) {
   } catch {}
 
   /* =========================
+     دالة تنبيه مشرفين
+  ========================= */
+
+  const notifyAdmins = async (reason) => {
+
+    const taggedAdmins = admins.slice(0, 5)
+
+    await conn.sendMessage(m.chat, {
+      text:
+`🚨 *تنبيه مخالفة*
+
+👤 @${m.sender.split('@')[0]}
+⚠️ السبب: ${reason}
+
+📢 تم تنبيه المشرفين:
+${taggedAdmins.map(a => '@' + a.split('@')[0]).join(' ')}`,
+
+      mentions: [m.sender, ...taggedAdmins]
+    })
+  }
+
+  /* =========================
      Anti-Link
   ========================= */
 
@@ -57,12 +79,16 @@ export default async function before(m, { conn }) {
 
   if (g.antiLink && linkRegex.test(text)) {
 
-    await conn.sendMessage(m.chat, { delete: m.key })
-
     await conn.sendMessage(m.chat, {
-      text: `🚨 *مخالفة رابط*\n\n👤 @${m.sender.split('@')[0]}\n⚠️ نشر رابط ممنوع\n📢 تم تنبيه المشرفين`,
-      mentions: [m.sender, ...admins]
+      text: "🚨 تم رصد رابط مخالف",
+      quoted: m
     })
+
+    try {
+      await conn.sendMessage(m.chat, { delete: m.key })
+    } catch {}
+
+    await notifyAdmins("نشر رابط")
 
     return true
   }
@@ -71,6 +97,64 @@ export default async function before(m, { conn }) {
      Anti-Swear
   ========================= */
 
+  const isBad = badWords.some(w => cleanText.includes(w))
+
+  if (isBad) {
+
+    await conn.sendMessage(m.chat, {
+      text: "🚨 تم رصد لفظ غير لائق",
+      quoted: m
+    })
+
+    try {
+      await conn.sendMessage(m.chat, { delete: m.key })
+    } catch {}
+
+    await notifyAdmins("استخدام كلمات غير لائقة")
+
+    return true
+  }
+
+  /* =========================
+     Anti-Spam
+  ========================= */
+
+  const user = m.sender
+  const now = Date.now()
+
+  global.spam[m.chat] ||= {}
+  global.spam[m.chat][user] ||= { count: 0, last: now }
+
+  const diff = now - global.spam[m.chat][user].last
+
+  if (diff < 5000) {
+    global.spam[m.chat][user].count += 1
+  } else {
+    global.spam[m.chat][user].count = 1
+  }
+
+  global.spam[m.chat][user].last = now
+
+  if (global.spam[m.chat][user].count >= 7) {
+
+    await conn.sendMessage(m.chat, {
+      text: "🚨 تم رصد سبام",
+      quoted: m
+    })
+
+    try {
+      await conn.sendMessage(m.chat, { delete: m.key })
+    } catch {}
+
+    await notifyAdmins("إرسال رسائل بسرعة (سبام)")
+
+    global.spam[m.chat][user].count = 0
+
+    return true
+  }
+
+  return false
+}
   const isBad = badWords.some(w =>
     cleanText.includes(w)
   )
