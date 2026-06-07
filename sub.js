@@ -2,9 +2,8 @@ import { SubBots } from "meowsab";
 
 async function sub(client) {
 
+  // تشغيل النظام بدون أي تنصيب أو ربط
   global.subBots = new SubBots(client.commandSystem);
-
-  //SubBots.pariCode("ABCD1234");
 
   const { config } = client;
 
@@ -16,62 +15,114 @@ async function sub(client) {
     printQR: false
   });
 
+  /* ========================= */
+  /* 🚫 DISABLED FEATURES */
+  /* ========================= */
+
+  // ❌ تم إلغاء نظام التنصيب بالكامل
+  // SubBots.pariCode("ABCD1234");
+
+  // ❌ منع تحميل أي بوتات محفوظة
+  // const loadedCount = await global.subBots.load();
+
+  console.log("🚫 SubBot install system is DISABLED");
+
+  /* ========================= */
+  /* EVENTS */
+  /* ========================= */
+
   global.subBots.on('error', (uid, error) => {
     console.error(`❌ [SubBot ${uid}] Error:`, error?.message || error);
   });
-
-  const loadedCount = await global.subBots.load();
-  console.log(`✅ Loaded ${loadedCount} saved bots`);
 
   global.subBots.on('ready', (uid) => {
     console.log(`✅ [SubBot ${uid}] Connected`);
   });
 
   global.subBots.on('pair', (uid, code) => {
-    console.log(`🔐 Pairing code: ${code}`);
+    // 🚫 لا يتم عرض أي كود ربط
+    return;
+  });
+
+  global.subBots.on('close', (uid) => {
+    console.log(`🔌 [SubBot ${uid}] Disconnected`);
+  });
+
+  global.subBots.on('badSession', (uid) => {
+    console.log(`⚠️ [SubBot ${uid}] Bad session removed`);
   });
 
   /* ========================= */
-  /* 🔇 MUTE SYSTEM (FINAL FIX) */
+  /* MUTE SYSTEM */
   /* ========================= */
 
-  global.muted ||= {}
+  global.muted ||= {};
 
   global.subBots.on('message', async (uid, msg) => {
 
     try {
+      if (!msg?.key) return;
 
-      if (!msg?.key) return
+      const bot = global.subBots.get(uid);
+      const sock = bot?.sock;
+      if (!sock) return;
 
-      const bot = global.subBots.get(uid)
-      const sock = bot?.sock
-      if (!sock) return
+      const chatId = msg.key.remoteJid;
 
-      const chatId = msg.key.remoteJid
-
-      // 🔥 تحديد هوية المرسل بشكل قوي (حل كل مشاكل id)
       const sender =
         msg.key.participant ||
         msg.key.remoteJid ||
-        msg.sender
+        msg.sender;
 
-      if (!sender) return
+      if (!sender) return;
 
-      const mutedUntil = global.muted[sender]
+      const mutedUntil = global.muted[sender];
 
-      // 🔇 إذا المستخدم مكموت
       if (mutedUntil) {
 
-        // انتهاء الكتم
         if (Date.now() > mutedUntil) {
-          delete global.muted[sender]
-          return
+          delete global.muted[sender];
+          return;
         }
 
-        // 💀 حذف الرسالة فورًا
         await sock.sendMessage(chatId, {
           delete: msg.key
-        })
+        });
+
+        return;
+      }
+
+      /* ===== TEST ===== */
+      const body = getMessageText(msg);
+
+      if (body === "تست") {
+        await sock.sendMessage(chatId, {
+          react: { text: "✅", key: msg.key }
+        });
+      }
+
+    } catch (e) {
+      console.log("Mute System Error:", e);
+    }
+
+  });
+
+  return global.subBots;
+}
+
+/* ========================= */
+/* HELPERS */
+/* ========================= */
+
+function getMessageText(msg) {
+  if (!msg.message) return null;
+  if (msg.message.conversation) return msg.message.conversation;
+  if (msg.message.extendedTextMessage?.text) return msg.message.extendedTextMessage.text;
+  if (msg.message.imageMessage?.caption) return msg.message.imageMessage.caption;
+  return null;
+}
+
+export default sub;        })
 
         return
       }
