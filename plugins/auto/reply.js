@@ -35,13 +35,13 @@ export default async function before(m, { conn }) {
 
   if (text.includes("دا ثانويه عامه")) {
 
-    if (!m.quoted) return
+    if (!m.quoted) return;
 
     const laugh =
 `😂😂😂😂😂😂
 هههههههههههههههههههههههههههههههه
 هههههههههههههههههههههههههههههههه
-روح ذاكر 📚`
+روح ذاكر 📚`;
 
     await conn.sendMessage(m.chat, {
       text: laugh,
@@ -50,9 +50,9 @@ export default async function before(m, { conn }) {
         participant: m.quoted.key?.participant,
         mentionedJid: [m.quoted.sender || m.sender]
       }
-    }, { quoted: m })
+    }, { quoted: m });
 
-    return
+    return;
   }
 
   /* =========================
@@ -66,7 +66,98 @@ export default async function before(m, { conn }) {
   ) {
 
     if (!m.quoted) {
-      await m.reply("وصلي على النبي ﷺ 🤍")
+      await m.reply("وصلي على النبي ﷺ 🤍");
+      return;
+    }
+
+    await conn.sendMessage(m.chat, {
+      text: "وصلي على النبي ﷺ 🤍",
+      contextInfo: {
+        stanzaId: m.quoted.key?.id,
+        participant: m.quoted.key?.participant,
+        mentionedJid: [m.quoted.sender || m.sender]
+      }
+    }, { quoted: m });
+
+    return;
+  }
+
+  /* =========================
+     VIP SYSTEM
+  ========================= */
+
+  const vip = {
+    "201140749033@s.whatsapp.net": {
+      name: "الإمبراطور",
+      reply: "👑⚡ تحت أمرك يا امبريور ⚡👑\n🍷 العالم كله في خدمتك يا إمبراطور"
+    },
+
+    "4915510468131@s.whatsapp.net": {
+      name: "لوسيفر",
+      reply: "❓ انت مين يا حبيبي؟"
+    },
+
+    "201055005266@s.whatsapp.net": {
+      name: "ناغومو",
+      reply: "🎖️ تحت امر القائد ناغومو"
+    },
+
+    "201090957996@s.whatsapp.net": {
+      name: "مازن",
+      reply: "🤍 تحت امر دحيح الدفعه مازن"
+    },
+
+    "201274272076@s.whatsapp.net": {
+      name: "ميتسوري",
+      reply: "🌸 تحت امر ميتسوري مؤسسة القلش"
+    },
+
+    "201091011979@s.whatsapp.net": {
+      name: "يامي",
+      reply: "🖤 تحت امر القدوه يامي"
+    }
+  };
+
+  /* =========================
+     VIP: زيرام
+  ========================= */
+
+  if (text === "زيرام") {
+
+    const user = vip[m.sender];
+
+    if (user) {
+      await m.reply(user.reply);
+      return;
+    }
+
+    const normal = [
+      "شبيك لبيك زيرام بين ايديك🤍🍷",
+      "أوامرك يا قائد 👑",
+      "في خدمتك دائمًا 🤍"
+    ];
+
+    await m.reply(normal[Math.floor(Math.random() * normal.length)]);
+    return;
+  }
+
+  /* =========================
+     🔥 أمر ميتسوري (قول مياة)
+  ========================= */
+
+  if (text === "قول مياو") {
+
+    const mitsuriId = "201274272076@s.whatsapp.net";
+
+    if (m.sender === mitsuriId) {
+      await m.reply("مياووووو 🐱");
+    } else {
+      await m.reply("*هذا الأمر خاص بميتسوري*");
+    }
+
+    return;
+  }
+}      await m.reply("وصلي على النبي ﷺ 🤍")
       return
     }
 
