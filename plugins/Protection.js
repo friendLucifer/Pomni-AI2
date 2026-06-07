@@ -8,19 +8,12 @@ export default async function before(m, { conn }) {
   db.groups ||= {}
   const g = db.groups[m.chat] ||= {}
 
-  const badWords = [
-    "كسمك",
-    "كسم",
-    "عرض",
-    "عرص",
-    "حول",
-    "متناك",
-    "شرموط"
-  ]
+  // =========================
+  // فلتر سب ذكي (بديل القائمة)
+  // =========================
+  const badWordsRegex = /(كسم|عرص|زبي|شرموط|متناك|نيك|ظوبري|زبري|خول|زب|طيز|قحبه)/i
 
-  // 🔥 نص موحد مضمون
   const text = (m.text || m.body || "").toLowerCase()
-
   const cleanText = text.replace(/[^\p{L}\p{N}]/gu, "")
 
   // =========================
@@ -61,7 +54,7 @@ ${taggedAdmins.map(a => '@' + a.split('@')[0]).join(' ')}`,
     try {
       await conn.sendMessage(m.chat, {
         text: "🚨 تم رصد رابط مخالف"
-      })
+      }, { quoted: m })
 
       await conn.sendMessage(m.chat, {
         delete: m.key
@@ -76,14 +69,14 @@ ${taggedAdmins.map(a => '@' + a.split('@')[0]).join(' ')}`,
   // =========================
   // Anti-Swear
   // =========================
-  const isBad = badWords.some(w => cleanText.includes(w))
+  const isBad = badWordsRegex.test(cleanText)
 
   if (isBad) {
 
     try {
       await conn.sendMessage(m.chat, {
         text: "🚨 تم رصد لفظ غير لائق"
-      })
+      }, { quoted: m })
 
       await conn.sendMessage(m.chat, {
         delete: m.key
@@ -118,7 +111,7 @@ ${taggedAdmins.map(a => '@' + a.split('@')[0]).join(' ')}`,
     try {
       await conn.sendMessage(m.chat, {
         text: "🚨 تم رصد سبام"
-      })
+      }, { quoted: m })
 
       await conn.sendMessage(m.chat, {
         delete: m.key
